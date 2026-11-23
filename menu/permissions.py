@@ -1,0 +1,17 @@
+from rest_framework.permissions import BasePermission
+
+
+class IsChefOrReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            return True
+        return request.user.is_authenticated and (
+            request.user.is_staff or request.user.profile.role == 'chef'
+        )
+
+
+class IsAdminOrReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            return True
+        return request.user.is_staff

@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from .models import Profile
 
 class RegisterSerializers(serializers.ModelSerializer):
     password = serializers.CharField(write_only = True)
     password2 = serializers.CharField(write_only = True)
-    
     
     class Meta:
         model = User
@@ -18,6 +18,7 @@ class RegisterSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('password2')
         user = User.objects.create_user(**validated_data)
+        Profile.objects.create(user=user, role='client')
         return user
 
 class LoginSerializer(serializers.Serializer):
